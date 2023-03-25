@@ -688,6 +688,53 @@ So the ideal superset implementation for <code class="xref py py-func docutils l
 As a workaround, we can simply make use of the backend-specific implementations for a certain number of dimensions and modes for each backend, and then have a general compositional implementations which covers all the remaining cases.
 This will make sure that we don’t introduce any inefficiencies and also avoid re-implementation for all the backends.</p>
 <p>Ivy allows this using the <a class="reference external" href="https://github.com/unifyai/ivy/blob/6a57477daa87e3b3c6d157f10b935ba4fa21c39f/ivy/func_wrapper.py#L923">handle_mixed_function</a> wrapper on the backend-specific implementation. So the <code class="code docutils literal notranslate"><span class="pre">torch</span></code> backend implementation of <code class="xref py py-func docutils literal notranslate"><span class="pre">interpolate()</span></code> would look like the following,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handle_mixed_function</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">mode</span>
+    <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="s2">&quot;tf_area&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bicubic_tensorflow&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mitchellcubic&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lanczos3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lanczos5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">interpolate</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">size</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+        <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bilinear&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;trilinear&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nearest&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;area&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;nearest_exact&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tf_area&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bicubic&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;mitchellcubic&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lanczos3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lanczos5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;gaussian&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="n">scale_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">recompute_scale_factor</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">align_corners</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">antialias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+        <span class="n">align_corners</span><span class="o">=</span><span class="n">align_corners</span><span class="p">,</span>
+        <span class="n">antialias</span><span class="o">=</span><span class="n">antialias</span><span class="p">,</span>
+        <span class="n">scale_factor</span><span class="o">=</span><span class="n">scale_factor</span><span class="p">,</span>
+        <span class="n">recompute_scale_factor</span><span class="o">=</span><span class="n">recompute_scale_factor</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 <p>The <code class="code docutils literal notranslate"><span class="pre">&#64;handle_mixed_function</span></code> accepts a function as an input that receives the arguments and keyword arguments passed to the backend-specific implementation.
 The input function is expected to be a boolean function where we’d use the backend-specific implementation if <code class="code docutils literal notranslate"><span class="pre">True</span></code> and the compositional implementation if <code class="code docutils literal notranslate"><span class="pre">False</span></code>.
 This provides the flexibility to add any custom logic based on the use-case for maximal use of framework-specific implementations while achieving superset generalization.</p>
