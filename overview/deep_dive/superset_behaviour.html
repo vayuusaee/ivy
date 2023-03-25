@@ -669,8 +669,8 @@ Implementing the superset does not mean adopting the same default values for arg
 <h2>Maximizing Usage of Native Functionality<a class="headerlink" href="#maximizing-usage-of-native-functionality" title="Permalink to this heading">#</a></h2>
 <p>While achieving the objective of having superset behaviour across the backends, native functionality of frameworks should be made use of as much as possible.
 Even if a framework-specific function doesn’t provide complete superset behaviour, we should still make use of the partial behaviour that it provides an then add more logic for the remaining part.
-This is for efficiency reasons and is more explained under the <cite>Mixed Functions &lt;https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions&gt;</cite> section.
-In cases when a framework-specific function exists for one or two backends which cover the superset, we still implement a <cite>Mixed Functions &lt;https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions&gt;</cite>.
+This is for efficiency reasons and is more explained under the <a class="reference external" href="https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions">Mixed Function</a> section.
+In cases when a framework-specific function exists for one or two backends but not the others, we implement a <a class="reference external" href="https://lets-unify.ai/ivy/overview/deep_dive/function_types.html#mixed-functions">Mixed Function</a>.
 But when the framework-specific functions do not cover all superset functionality, Ivy also allows for a mixed-compositional hybrid approach.</p>
 <p>Consider the example of <code class="xref py py-func docutils literal notranslate"><span class="pre">interpolate()</span></code>,
 Most frameworks contain some kind of interpolation function, usually limited to 2D and/or 3D, but <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.interpolate()</span></code> should be much more general, including interpolations across a larger number of dimensions.
