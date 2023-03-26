@@ -1956,7 +1956,8 @@ document.write(`
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([0., 1., 2.]),</span>
 <span class="sd">        ...                   b = ivy.array([4., 5., 6.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.array([0, 1])</span>
-<span class="sd">        &gt;&gt;&gt; print(ivy.Container.static_gather(x, y))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_gather(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0., 1.]),</span>
 <span class="sd">            b: ivy.array([4., 5.])</span>
@@ -2032,7 +2033,8 @@ document.write(`
 <span class="sd">        ...                   b = ivy.array([4., 5., 6.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a = ivy.array([0, 1]),</span>
 <span class="sd">        ...                   b = ivy.array([1, 2]))</span>
-<span class="sd">        &gt;&gt;&gt; print(x.gather(y))</span>
+<span class="sd">        &gt;&gt;&gt; z = x.gather(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([0., 1.]),</span>
 <span class="sd">            b: ivy.array([5., 6.])</span>
@@ -2072,6 +2074,17 @@ document.write(`
 <span class="sd">            The container to check for nans.</span>
 <span class="sd">        include_infs</span>
 <span class="sd">            Whether to include infs and -infs in the check. Default is True.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2080,7 +2093,7 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float(&#39;nan&#39;), 2]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float(&#39;nan&#39;), 2]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_has_nans(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -2116,6 +2129,17 @@ document.write(`
 <span class="sd">        ----------</span>
 <span class="sd">        include_infs</span>
 <span class="sd">            Whether to include infs and -infs in the check. Default is True.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2123,7 +2147,7 @@ document.write(`
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.container(a=ivy.array([1, 2]), b=ivy.array([float(&#39;nan&#39;), 2]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([float(&#39;nan&#39;), 2]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.has_nans(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
@@ -2493,8 +2517,12 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        params</span>
+<span class="sd">            The container from which to gather values.</span>
 <span class="sd">        indices</span>
 <span class="sd">            Index array.</span>
+<span class="sd">        batch_dims</span>
+<span class="sd">            optional int, lets you gather different items from each element of a batch.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
@@ -2506,6 +2534,9 @@ document.write(`
 <span class="sd">        map_sequences</span>
 <span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
 <span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional array, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2560,6 +2591,8 @@ document.write(`
 <span class="sd">            The container from which to gather values.</span>
 <span class="sd">        indices</span>
 <span class="sd">            Index array or container.</span>
+<span class="sd">        batch_dims</span>
+<span class="sd">            optional int, lets you gather different items from each element of a batch.</span>
 <span class="sd">        key_chains</span>
 <span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
 <span class="sd">        to_apply</span>
@@ -2625,6 +2658,8 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input container.</span>
 <span class="sd">        pattern</span>
 <span class="sd">            Reduction pattern.</span>
 <span class="sd">        reduction</span>
@@ -2643,6 +2678,9 @@ document.write(`
 <span class="sd">            Default is ``False``.</span>
 <span class="sd">        axes_lengths</span>
 <span class="sd">            Any additional specifications for dimensions.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional array, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -2776,6 +2814,8 @@ document.write(`
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input container.</span>
 <span class="sd">        pattern</span>
 <span class="sd">            Rearrangement pattern.</span>
 <span class="sd">        key_chains</span>
