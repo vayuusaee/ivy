@@ -508,6 +508,7 @@ document.write(`
 <span class="n">BuiltGradientStrategy</span> <span class="o">=</span> <span class="n">_gradient_strategy</span><span class="p">()</span>
 <span class="n">BuiltWithOutStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
 <span class="n">BuiltCompileStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
+<span class="n">BuiltFrontendArrayStrategy</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">()</span>
 
 
 <span class="n">flags_mapping</span> <span class="o">=</span> <span class="p">{</span>
@@ -631,12 +632,14 @@ document.write(`
         <span class="n">inplace</span><span class="p">,</span>
         <span class="n">as_variable</span><span class="p">,</span>
         <span class="n">native_arrays</span><span class="p">,</span>
+        <span class="n">generate_frontend_arrays</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="o">=</span> <span class="n">num_positional_args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">with_out</span> <span class="o">=</span> <span class="n">with_out</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inplace</span> <span class="o">=</span> <span class="n">inplace</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span> <span class="o">=</span> <span class="n">native_arrays</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span> <span class="o">=</span> <span class="n">as_variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_frontend_arrays</span> <span class="o">=</span> <span class="n">generate_frontend_arrays</span></div>
 
 <div class="viewcode-block" id="FrontendFunctionTestFlags.apply_flags"><a class="viewcode-back" href="../../../../docs/testing/helpers/ivy_tests.test_ivy.helpers.test_parameter_flags.html#ivy_tests.test_ivy.helpers.test_parameter_flags.FrontendFunctionTestFlags.apply_flags">[docs]</a>    <span class="k">def</span> <span class="nf">apply_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args_to_iterate</span><span class="p">,</span> <span class="n">input_dtypes</span><span class="p">,</span> <span class="n">on_device</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
@@ -656,6 +659,8 @@ document.write(`
             <span class="sa">f</span><span class="s2">&quot;inplace=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">inplace</span><span class="si">}</span><span class="s2">. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;native_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">native_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;as_variable=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">as_variable</span><span class="si">}</span><span class="s2">. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;generate_frontend_arrays=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_frontend_arrays</span><span class="si">}</span><span class="s2">. &quot;</span>
+
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -671,6 +676,7 @@ document.write(`
     <span class="n">inplace</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">native_arrays</span><span class="p">,</span>
+    <span class="n">generate_frontend_arrays</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span>
         <span class="n">st</span><span class="o">.</span><span class="n">builds</span><span class="p">(</span>
@@ -680,6 +686,7 @@ document.write(`
             <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span>
             <span class="n">as_variable</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
             <span class="n">native_arrays</span><span class="o">=</span><span class="n">native_arrays</span><span class="p">,</span>
+            <span class="n">generate_frontend_arrays</span><span class="o">=</span><span class="n">generate_frontend_arrays</span>
         <span class="p">)</span>
     <span class="p">)</span></div>
 
