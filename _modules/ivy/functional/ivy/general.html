@@ -2439,8 +2439,7 @@ document.write(`
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">axes_lengths</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Perform einops repeat operation on input array x.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Perform einops repeat operation on input array x.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2458,6 +2457,9 @@ document.write(`
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        New array with einops.repeat having been applied.</span>
+
+<span class="sd">    This function is *nestable*, and therefore also accepts :code:&#39;ivy.Container&#39;</span>
+<span class="sd">    instance in place of the argument.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
