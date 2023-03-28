@@ -628,10 +628,12 @@ Ivy provides the <code class="xref py py-func docutils literal notranslate"><spa
 <span class="n">ret</span><span class="p">,</span> <span class="n">grad</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <code class="code docutils literal notranslate"><span class="pre">custom_grad_fn</span></code> here accepts <code class="code docutils literal notranslate"><span class="pre">*args</span></code> which has the structure <code class="code docutils literal notranslate"><span class="pre">((xs,</span> <span class="pre">ret),</span> <span class="pre">upstream)</span></code> where,
-* <code class="code docutils literal notranslate"><span class="pre">xs</span></code> is the input similar to the one accepted in <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.execute_with_gradients()</span></code>
-* <code class="code docutils literal notranslate"><span class="pre">ret</span></code> is the output of the forward pass of the <code class="xref py py-func docutils literal notranslate"><span class="pre">inter_func()</span></code>
-* <code class="code docutils literal notranslate"><span class="pre">upstream</span></code> refers to the previously computed gradients while back-propagating</p>
+<p>The <code class="code docutils literal notranslate"><span class="pre">custom_grad_fn</span></code> here accepts <code class="code docutils literal notranslate"><span class="pre">*args</span></code> which has the structure <code class="code docutils literal notranslate"><span class="pre">((xs,</span> <span class="pre">ret),</span> <span class="pre">upstream)</span></code> where,</p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">xs</span></code> is the input similar to the one accepted in <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.execute_with_gradients()</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ret</span></code> is the output of the forward pass of the <code class="xref py py-func docutils literal notranslate"><span class="pre">inter_func()</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">upstream</span></code> refers to the previously computed gradients while back-propagating</p></li>
+</ul>
 </section>
 </section>
 <section id="design-of-the-gradient-api">
