@@ -436,6 +436,7 @@ document.write(`
 
 
 
+
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ivy.functional.ivy.general.html">General</a></li>
@@ -3429,7 +3430,7 @@ The algorithm used for interpolation is determined by mode.</p>
 <li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/ivy.data_classes.array.html#ivy.data_classes.array.array.Array" title="ivy.data_classes.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input array, Must have the shape
 [batch x channels x [optional depth] x [optional height] x width].</p></li>
 <li><p><strong>size</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Output size.</p></li>
-<li><p><strong>mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘linear’, ‘bilinear’, ‘trilinear’, ‘nearest’, ‘area’, ‘nearest_exact’, ‘tf_area’, ‘bicubic’, ‘mitchellcubic’, ‘lanczos3’, ‘lanczos5’, ‘gaussian’]) – Interpolation mode. Can be one of the following: (default: <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>)
+<li><p><strong>mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘linear’, ‘bilinear’, ‘trilinear’, ‘nearest’, ‘area’, ‘nearest_exact’, ‘tf_area’, ‘bicubic_tensorflowbicubic’, ‘mitchellcubic’, ‘lanczos3’, ‘lanczos5’, ‘gaussian’]) – Interpolation mode. Can be one of the following: (default: <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>)
 - linear
 - bilinear
 - trilinear
@@ -5597,6 +5598,11 @@ into a tuple of coordinate arrays.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.experimental.upsample_bicubic2d_default">
+<span class="sig-prename descclassname"><span class="pre">ivy.</span></span><span class="sig-name descname"><span class="pre">upsample_bicubic2d_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_corners</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_h</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_w</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/experimental/layers.html#upsample_bicubic2d_default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.experimental.upsample_bicubic2d_default" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.experimental.vorbis_window">
 <span class="sig-prename descclassname"><span class="pre">ivy.</span></span><span class="sig-name descname"><span class="pre">vorbis_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/experimental/creation.html#vorbis_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.experimental.vorbis_window" title="Permalink to this definition">#</a></dt>
 <dd><p>Returns an array that contains a vorbis power complementary window
@@ -5952,6 +5958,7 @@ input arrays’ values.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy.functional.ivy.experimental.tril_indices"><code class="docutils literal notranslate"><span class="pre">tril_indices()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy.functional.ivy.experimental.triu_indices"><code class="docutils literal notranslate"><span class="pre">triu_indices()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy.functional.ivy.experimental.unravel_index"><code class="docutils literal notranslate"><span class="pre">unravel_index()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy.functional.ivy.experimental.upsample_bicubic2d_default"><code class="docutils literal notranslate"><span class="pre">upsample_bicubic2d_default()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy.functional.ivy.experimental.vorbis_window"><code class="docutils literal notranslate"><span class="pre">vorbis_window()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy.functional.ivy.experimental.vsplit"><code class="docutils literal notranslate"><span class="pre">vsplit()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ivy.functional.ivy.experimental.vstack"><code class="docutils literal notranslate"><span class="pre">vstack()</span></code></a></li>

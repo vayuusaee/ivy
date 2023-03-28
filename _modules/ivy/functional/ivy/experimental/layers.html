@@ -1626,6 +1626,88 @@ document.write(`
         <span class="mi">0</span><span class="p">,</span>
     <span class="p">)</span></div>
 
+<span class="k">def</span> <span class="nf">_upsample_cubic_convolution1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">A</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">A</span> <span class="o">+</span> <span class="mi">3</span><span class="p">))</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="k">def</span> <span class="nf">_upsample_cubic_convolution2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">A</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">A</span>
+
+
+<span class="k">def</span> <span class="nf">_upsample_get_cubic_coefficients</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.75</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">_upsample_cubic_convolution2</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">A</span><span class="p">),</span>
+        <span class="n">_upsample_cubic_convolution1</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">A</span><span class="p">),</span>
+        <span class="n">_upsample_cubic_convolution1</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">A</span><span class="p">),</span>
+        <span class="n">_upsample_cubic_convolution2</span><span class="p">(</span><span class="mf">2.0</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">A</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_upsample_cubic_interp1d</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="n">coeffs2</span> <span class="o">=</span> <span class="n">_upsample_get_cubic_coefficients</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_sum_tensors</span><span class="p">(</span><span class="n">c1</span> <span class="o">*</span> <span class="n">c2</span> <span class="k">for</span> <span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coeffs</span><span class="p">,</span> <span class="n">coeffs2</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">_sum_tensors</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+
+<div class="viewcode-block" id="upsample_bicubic2d_default"><a class="viewcode-back" href="../../../../../docs/functional/ivy/ivy.functional.ivy.experimental.html#ivy.functional.ivy.experimental.upsample_bicubic2d_default">[docs]</a><span class="k">def</span> <span class="nf">upsample_bicubic2d_default</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">,</span>
+    <span class="n">output_size</span><span class="p">,</span>
+    <span class="n">align_corners</span><span class="p">,</span>
+    <span class="n">scale_h</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">scale_w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">iH</span><span class="p">,</span> <span class="n">iW</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">oH</span><span class="p">,</span> <span class="n">oW</span> <span class="o">=</span> <span class="n">output_size</span>
+
+    <span class="k">def</span> <span class="nf">compute_scale</span><span class="p">(</span><span class="n">in_size</span><span class="p">,</span> <span class="n">out_size</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">align_corners</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">in_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">out_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">out_size</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">scale</span> <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">scale</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">in_size</span> <span class="o">/</span> <span class="n">out_size</span>
+
+    <span class="k">def</span> <span class="nf">compute_source_index</span><span class="p">(</span><span class="n">scale</span><span class="p">,</span> <span class="n">dst_index</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">align_corners</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">dst_index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">scale</span> <span class="o">*</span> <span class="p">(</span><span class="n">dst_index</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span>
+
+    <span class="n">height_scale</span> <span class="o">=</span> <span class="n">compute_scale</span><span class="p">(</span><span class="n">iH</span><span class="p">,</span> <span class="n">oH</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">scale_h</span><span class="p">)</span>
+    <span class="n">width_scale</span> <span class="o">=</span> <span class="n">compute_scale</span><span class="p">(</span><span class="n">iW</span><span class="p">,</span> <span class="n">oW</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">,</span> <span class="n">scale_w</span><span class="p">)</span>
+
+    <span class="n">N_idx</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">C_idx</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">C</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">out_y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">oH</span><span class="p">),</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">oH</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="n">out_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">oW</span><span class="p">),</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">oW</span><span class="p">)))</span>
+
+    <span class="n">real_x</span> <span class="o">=</span> <span class="n">compute_source_index</span><span class="p">(</span><span class="n">width_scale</span><span class="p">,</span> <span class="n">out_x</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">)</span>
+    <span class="n">in_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">real_x</span><span class="p">)</span>
+    <span class="n">t_x</span> <span class="o">=</span> <span class="n">real_x</span> <span class="o">-</span> <span class="n">in_x</span>
+    <span class="n">ix</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">in_x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">real_y</span> <span class="o">=</span> <span class="n">compute_source_index</span><span class="p">(</span><span class="n">height_scale</span><span class="p">,</span> <span class="n">out_y</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">)</span>
+    <span class="n">in_y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">real_y</span><span class="p">)</span>
+    <span class="n">t_y</span> <span class="o">=</span> <span class="n">real_y</span> <span class="o">-</span> <span class="n">in_y</span>
+    <span class="n">iy</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">in_y</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">iys_ofs</span> <span class="o">=</span> <span class="p">(</span><span class="n">iy</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">iy</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">iy</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ixs_ofs</span> <span class="o">=</span> <span class="p">(</span><span class="n">ix</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">ix</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ix</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">load_bounded</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
+        <span class="n">y_idx</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">iH</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_idx</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">iW</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="n">N_idx</span><span class="p">,</span> <span class="n">C_idx</span><span class="p">,</span> <span class="n">y_idx</span><span class="p">,</span> <span class="n">x_idx</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get_x_interp</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
+        <span class="n">coeffs_x</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">load_bounded</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x_ofs</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_ofs</span> <span class="ow">in</span> <span class="n">ixs_ofs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">_upsample_cubic_interp1d</span><span class="p">(</span><span class="n">coeffs_x</span><span class="p">,</span> <span class="n">t_x</span><span class="p">)</span>
+
+    <span class="n">coeffs_y</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">get_x_interp</span><span class="p">(</span><span class="n">y_ofs</span><span class="p">)</span> <span class="k">for</span> <span class="n">y_ofs</span> <span class="ow">in</span> <span class="n">iys_ofs</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">_upsample_cubic_interp1d</span><span class="p">(</span><span class="n">coeffs_y</span><span class="p">,</span> <span class="n">t_y</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
 
 <div class="viewcode-block" id="interpolate"><a class="viewcode-back" href="../../../../../docs/functional/ivy/ivy.functional.ivy.experimental.html#ivy.functional.ivy.experimental.interpolate">[docs]</a><span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
@@ -1642,6 +1724,7 @@ document.write(`
         <span class="s2">&quot;area&quot;</span><span class="p">,</span>
         <span class="s2">&quot;nearest_exact&quot;</span><span class="p">,</span>
         <span class="s2">&quot;tf_area&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bicubic_tensorflow&quot;</span>
         <span class="s2">&quot;bicubic&quot;</span><span class="p">,</span>
         <span class="s2">&quot;mitchellcubic&quot;</span><span class="p">,</span>
         <span class="s2">&quot;lanczos3&quot;</span><span class="p">,</span>
@@ -1755,6 +1838,7 @@ document.write(`
     <span class="k">if</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span>
         <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
         <span class="s2">&quot;bilinear&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bicubic&quot;</span><span class="p">,</span>
         <span class="s2">&quot;bicubic_tensorflow&quot;</span><span class="p">,</span>
         <span class="s2">&quot;trilinear&quot;</span><span class="p">,</span>
         <span class="s2">&quot;lanczos3&quot;</span><span class="p">,</span>
@@ -1855,29 +1939,7 @@ document.write(`
                             <span class="mi">1</span> <span class="o">/</span> <span class="n">scale_x</span>
                         <span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;bicubic&quot;</span><span class="p">:</span>
-        <span class="n">scale_factor_h</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">scale_factor_w</span> <span class="o">=</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;edge&quot;</span><span class="p">)</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
-                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
-                        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="n">scale_factor_h</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">j</span> <span class="o">/</span> <span class="n">scale_factor_w</span> <span class="o">+</span> <span class="mi">2</span>
-                        <span class="n">x_s</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span> <span class="o">-</span> <span class="n">x0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
-                        <span class="n">y_s</span> <span class="o">=</span> <span class="p">[</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">y0</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span> <span class="o">-</span> <span class="n">y0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
-                        <span class="n">mat_l</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">bicubic_kernel</span><span class="p">(</span><span class="n">x_i</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="n">x_s</span><span class="p">]])</span>
-                        <span class="n">mat_m</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                            <span class="p">[</span>
-                                <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">x0</span> <span class="o">+</span> <span class="n">x_i</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y0</span> <span class="o">+</span> <span class="n">y_i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">y_i</span> <span class="ow">in</span> <span class="n">y_s</span><span class="p">]</span>
-                                <span class="k">for</span> <span class="n">x_i</span> <span class="ow">in</span> <span class="n">x_s</span>
-                            <span class="p">],</span>
-                            <span class="n">dtype</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
-                        <span class="p">)</span>
-                        <span class="n">mat_r</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">bicubic_kernel</span><span class="p">(</span><span class="n">y_i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">y_i</span> <span class="ow">in</span> <span class="n">y_s</span><span class="p">])</span>
-                        <span class="n">ret</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span>
-                            <span class="n">ivy</span><span class="o">.</span><span class="n">multi_dot</span><span class="p">((</span><span class="n">mat_l</span><span class="p">,</span> <span class="n">mat_m</span><span class="p">,</span> <span class="n">mat_r</span><span class="p">)),</span> <span class="mi">0</span>
-                        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">upsample_bicubic2d_default</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">align_corners</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;mitchellcubic&quot;</span><span class="p">,</span> <span class="s2">&quot;gaussian&quot;</span><span class="p">]:</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;mitchellcubic&quot;</span><span class="p">:</span>
             <span class="n">kernel_size_h</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
