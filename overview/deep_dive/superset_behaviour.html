@@ -563,15 +563,15 @@ The Ivy function then entails the <em>superset</em> of all backend features.
 However, this is not always totally possible, and in some cases certain framework-specific features must be sacrificed, but usually it’s possible to implement a very generalized function which covers most of the unique features among the corresponding functions in each framework.</p>
 <p>We strive to implement the superset for primary, compositional and mixed functions.
 In many cases compositional functions do not actually have corresponding backend-specific functions, but this is not always the case.
-For example, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> is a fully compositional function, but <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code> also exists.
-We should therefore make sure the compositional <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> function includes all behaviours supported by <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code>.</p>
+For example, <a class="reference internal" href="../../docs/functional/ivy/layers/ivy.functional.ivy.layers.linear.html#ivy.linear" title="ivy.linear"><code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code></a> is a fully compositional function, but <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code> also exists.
+We should therefore make sure the compositional <a class="reference internal" href="../../docs/functional/ivy/layers/ivy.functional.ivy.layers.linear.html#ivy.linear" title="ivy.linear"><code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code></a> function includes all behaviours supported by <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.linear()</span></code>.</p>
 </section>
 <section id="a-non-duplicate-superset">
 <h2>A Non-Duplicate Superset<a class="headerlink" href="#a-non-duplicate-superset" title="Permalink to this heading">#</a></h2>
 <p>It would be easy to assume that implementing the superset simply means adding all arguments from all related functions into the Ivy function.
 However, this is <strong>not</strong> the case for a few reasons.
 Firstly, different functions might have different argument names for the same behaviour.
-Looking at the functions <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.concatenate.html">numpy.concatenate</a> and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.cat.html">torch.cat</a>, we of course do not want to add both of the arguments <code class="code docutils literal notranslate"><span class="pre">axis</span></code> and <code class="code docutils literal notranslate"><span class="pre">dim</span></code> to <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.concat()</span></code>, as these both represent exactly the same thing: the dimemsion/axis along which to concatenate.
+Looking at the functions <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.concatenate.html">numpy.concatenate</a> and <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.cat.html">torch.cat</a>, we of course do not want to add both of the arguments <code class="code docutils literal notranslate"><span class="pre">axis</span></code> and <code class="code docutils literal notranslate"><span class="pre">dim</span></code> to <a class="reference internal" href="../../docs/functional/ivy/manipulation/ivy.functional.ivy.manipulation.concat.html#ivy.concat" title="ivy.concat"><code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.concat()</span></code></a>, as these both represent exactly the same thing: the dimemsion/axis along which to concatenate.
 In this case, the argument is <a class="reference external" href="https://data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html">covered</a> in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> and so we opt for <code class="code docutils literal notranslate"><span class="pre">axis</span></code>.
 In cases where there are differences between the backend argument names, and the function or argument is not in the standard, then it is up to us to determine which argument name to use.</p>
 </section>
@@ -603,7 +603,7 @@ However, as is discussed below, we always strive to implement Ivy functions such
 This inclusion of this feature in NumPy is totally understandable, compositions of NumPy functions are never compiled into computation graphs which span multiple operations, and therefore a good way to maximize efficiency of NumPy code is to minimize the number of unique NumPy functions which are called, each of which are implemented with very high efficiency in <code class="code docutils literal notranslate"><span class="pre">C</span></code>.
 In this case, the inclusion of <code class="code docutils literal notranslate"><span class="pre">where</span></code> as an argument also prevents unnecessary values from being computed in the first place, only to then be masked out in the immediately subsequent operation.
 For these reasons, calling <code class="code docutils literal notranslate"><span class="pre">np.absolute(x,</span> <span class="pre">where=mask)</span></code> is much more efficient than calling <code class="code docutils literal notranslate"><span class="pre">np.where(mask,</span> <span class="pre">np.absolute(x),</span> <span class="pre">np.empty_like(x))</span></code> in NumPy.
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code> is another example where the superset is too much, as we explain in the extra examples given at the end of this section.</p>
+<a class="reference internal" href="../../docs/functional/ivy/elementwise/ivy.functional.ivy.elementwise.logical_and.html#ivy.logical_and" title="ivy.logical_and"><code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code></a> is another example where the superset is too much, as we explain in the extra examples given at the end of this section.</p>
 <p>However, other frameworks are able to compile compositions of python operations directly to computation graphs in low-level languages, and are also able to intelligently fuse operations into combined kernels, via libraries such as <a class="reference external" href="https://github.com/NVIDIA/TensorRT">TensorRT</a>.
 This removes the need for highly general function signatures such as those found in NumPy.
 Instead, a compositional approach is preferred, where each function in Python generally serves a particular and non-overlapping purpose.
@@ -806,45 +806,6 @@ src="https://www.youtube.com/embed/_D6xER3H4NU" class="video">
             
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
-     aria-label="Section Navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Contributing</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../contributing/setting_up.html">Setting Up</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contributing/the_basics.html">The Basics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contributing/building_the_docs.html">Building the Docs</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../deep_dive.html">Deep Dive</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="navigating_the_code.html">Navigating the Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_types.html">Function Types</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Superset Behaviour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend_setting.html">Backend Setting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="arrays.html">Arrays</a></li>
-<li class="toctree-l2"><a class="reference internal" href="containers.html">Containers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data_types.html">Data Types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devices.html">Devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inplace_updates.html">Inplace Updates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_wrapping.html">Function Wrapping</a></li>
-<li class="toctree-l2"><a class="reference internal" href="formatting.html">Formatting</a></li>
-<li class="toctree-l2"><a class="reference internal" href="function_arguments.html">Function Arguments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="array_api_tests.html">Array API Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ivy_tests.html">Ivy Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ivy_frontends.html">Ivy Frontends</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exception_handling.html">Exception Handling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="continuous_integration.html">Continuous Integration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradients.html">Gradients</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../contributing/open_tasks.html">Open Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contributing/applied_libraries.html">Applied Libraries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../contributing/helpful_resources.html">Helpful Resources</a></li>
-</ul>
-</div>
-</nav></div>
 
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">

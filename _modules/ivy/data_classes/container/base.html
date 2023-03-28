@@ -198,10 +198,6 @@ document.write(`
   
 
   
-    <label class="sidebar-toggle secondary-toggle" for="__secondary">
-      <span class="fa-solid fa-outdent"></span>
-    </label>
-  
 </div>
 
     </nav>
@@ -4140,12 +4136,14 @@ document.write(`
         <span class="n">indent_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_indent</span>
 
         <span class="k">def</span> <span class="nf">_align_array</span><span class="p">(</span><span class="n">array_str_in</span><span class="p">):</span>
-            <span class="n">split_phrase_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
-                                <span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
-                                <span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
-                                <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
-                                <span class="s1">&#39;pytorch&#39;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
-                                <span class="s1">&#39;paddle&#39;</span><span class="p">:</span> <span class="s2">&quot;])&quot;</span><span class="p">}</span>
+            <span class="n">split_phrase_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;jax&quot;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;numpy&quot;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;pytorch&quot;</span><span class="p">:</span> <span class="s2">&quot;([&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;paddle&quot;</span><span class="p">:</span> <span class="s2">&quot;])&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
             <span class="n">split_phrase</span> <span class="o">=</span> <span class="n">split_phrase_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">current_backend_str</span><span class="p">()]</span>
             <span class="n">array_str_in_split</span> <span class="o">=</span> <span class="n">array_str_in</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_phrase</span><span class="p">)</span>
             <span class="n">leading_str_to_keep</span> <span class="o">=</span> <span class="n">array_str_in_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -4689,16 +4687,6 @@ document.write(`
             </div>
             
             
-              
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-  <div class="sidebar-secondary-item"><nav class="bd-docs-nav bd-links"
-     aria-label="Section Navigation">
-  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"></div>
-</nav></div>
-
-</div></div>
               
             
           </div>
