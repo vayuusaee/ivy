@@ -462,7 +462,6 @@ document.write(`
                   
   <h1>Source code for ivy_tests.test_ivy.helpers.function_testing</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
-<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -786,14 +785,14 @@ document.write(`
 
         <span class="c1"># Boolean mask for args and kwargs True if an entry&#39;s</span>
         <span class="c1"># test Array flag is True or test Container flag is true</span>
-        <span class="n">args_instance_mask</span> <span class="o">=</span> <span class="n">array_or_container_mask</span><span class="p">[:</span><span class="n">total_num_arrays</span><span class="p">]</span>
-        <span class="n">kwargs_instance_mask</span> <span class="o">=</span> <span class="n">array_or_container_mask</span><span class="p">[</span><span class="n">total_num_arrays</span><span class="p">:]</span>
+        <span class="n">args_instance_mask</span> <span class="o">=</span> <span class="n">array_or_container_mask</span><span class="p">[:</span> <span class="n">test_flags</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">]</span>
+        <span class="n">kwargs_instance_mask</span> <span class="o">=</span> <span class="n">array_or_container_mask</span><span class="p">[</span><span class="n">test_flags</span><span class="o">.</span><span class="n">num_positional_args</span> <span class="p">:]</span>
 
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">args_instance_mask</span><span class="p">):</span>
             <span class="n">instance</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">_find_instance_in_args</span><span class="p">(</span>
                 <span class="n">args</span><span class="p">,</span> <span class="n">arrays_args_indices</span><span class="p">,</span> <span class="n">args_instance_mask</span>
             <span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">kwargs_instance_mask</span><span class="p">):</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">instance</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">_find_instance_in_args</span><span class="p">(</span>
                 <span class="n">kwargs</span><span class="p">,</span> <span class="n">arrays_kwargs_indices</span><span class="p">,</span> <span class="n">kwargs_instance_mask</span>
             <span class="p">)</span>
