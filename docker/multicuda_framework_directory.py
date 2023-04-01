@@ -13,21 +13,27 @@ def directory_generator(req, base="/fw/"):
 
 
 def install_pkg(path, pkg, base="fw/"):
-    if pkg.split("==")[0] == "torch":
-        subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cu116  --no-cache-dir",
-            shell=True,
-        )
-    elif pkg.split("==")[0] == "jaxlib":
-        subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html   --no-cache-dir",
-            shell=True,
-        )
-    else:
-        subprocess.run(
-            f"pip3 install {pkg} --default-timeout=100   --no-cache-dir", shell=True
-        )
-
+    try:
+        if pkg.split("==")[0] == "torch":
+            subprocess.run(
+                f"pip3 install {pkg} --default-timeout=100 --extra-index-url https://download.pytorch.org/whl/cu116  --no-cache-dir",
+                shell=True,
+                check=True,
+            )
+        elif pkg.split("==")[0] == "jaxlib":
+            subprocess.run(
+                f"pip3 install {pkg} --default-timeout=100 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html   --no-cache-dir",
+                shell=True,
+                check=True,
+            )
+        else:
+            subprocess.run(
+                f"pip3 install {pkg} --default-timeout=100   --no-cache-dir", shell=True, check=True
+            )
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to install package {pkg}: {e}")
+        # remove the partially installed package
+        subprocess.run(f"rm -rf {path}", shell=True)
 
 if __name__ == "__main__":
     arg_lis = sys.argv
